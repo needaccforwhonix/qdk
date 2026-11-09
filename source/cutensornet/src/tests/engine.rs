@@ -810,3 +810,14 @@ fn a_probability_is_clamped_to_one() {
     let p = ok(engine.probability_of_one(&state, 0));
     assert!((p - 1.0).abs() < 1e-15, "{p}");
 }
+
+/// Development check, not for the PR: `tensornet`'s conformance kit on the
+/// engine over the double.
+#[test]
+fn the_engine_conforms_to_the_kit() {
+    let (engine, native) = engine();
+    let failures = tensornet::conformance::check(&engine);
+    assert!(failures.is_empty(), "{failures:#?}");
+    drop(engine);
+    assert_eq!(native.live_objects(), 0);
+}
