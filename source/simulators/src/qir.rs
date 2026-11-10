@@ -11,7 +11,8 @@
 //!   `prepared_quantum_calls`, `fault`, `quantum_instruction_encoding`;
 //! - the machine running a context: `machine`, `trap`;
 //! - the contract between the machine and a resumer: `call`, `gate`,
-//!   `operator_matrix`, `resumer`, `program`.
+//!   `operator_matrix`, `resumer`, `program`; the `conformance` kit checks
+//!   resumers against it.
 //!
 //! A resumer drives a context through [`QirMachine::resume`], and never
 //! sees the bytecode or how it encodes the quantum instructions: it reads
@@ -41,9 +42,8 @@
 //!
 //! The machine computes what the bytecode's reference interpreter
 //! (`bytecode::runtime::run_shot`) computes: every shot records what
-//! `run_shot` records, but in a few cases, each marked
-//! `COMPATIBILITY NOTE` or `DISCUSS COMPATIBILITY`, with its reason, at
-//! the check or the test of this crate that pins it.
+//! `run_shot` records, but in a few cases, listed with their reasons in
+//! the header of `tests/run_shot_compatibility/main.rs`, in this crate.
 //!
 //! An introduction, with an example, is in `src/qir/README.md`.
 
@@ -56,6 +56,9 @@ mod program;
 mod quantum_instruction_encoding;
 mod resumer;
 mod trap;
+
+#[cfg(any(test, feature = "conformance"))]
+pub use resumer::conformance;
 
 pub use call::{QirCall, QirInstruction, QirOutcome, QirQubits, QirReadout};
 pub use fault::{QirError, QirFault, QirFaultSite, QirFaults, SideTable};
